@@ -18,41 +18,27 @@ namespace BlazorSerilogDemo
     {
         public static async Task Main(string[] args)
         {
-
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddSingleton<LoggerService>();
 
-            var host = builder.Build();
-            
+            var host = builder.Build();           
 
             var levelSwitch = new LoggingLevelSwitch();
+            levelSwitch.MinimumLevel = LogEventLevel.Verbose;
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.ControlledBy(levelSwitch)
                 .Enrich.WithProperty("InstanceId", Guid.NewGuid().ToString("n"))
-                .WriteTo.BrowserConsole()
-                .WriteTo.LoggerSink(host.Services.GetRequiredService<LoggerService>())
+                .WriteTo.LoggerSink(host.Services.GetRequiredService<LoggerService>()) // the Blazor custome cachs log
+                .WriteTo.BrowserConsole() // browser console
+                .WriteTo.Debug()  // visual studio debug window
                 .CreateLogger();
 
             await host.RunAsync();
 
             Log.Information("Hello, browser!");
-
-
-
-            //Log.Logger = new LoggerConfiguration()
-            //    .MinimumLevel.Debug()
-            //    .WriteTo.LoggerSink()
-            //    .CreateLogger();
-
-            //        Log.Logger = new LoggerConfiguration()
-            //.MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-            //.Enrich.FromLogContext()
-            //.WriteTo.Console()
-            //.CreateLogger();
-
         }
     }
 }

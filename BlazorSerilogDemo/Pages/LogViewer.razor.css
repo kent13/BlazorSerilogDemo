@@ -1,0 +1,21 @@
+﻿
+.Verbose{
+    background-color:silver;
+}
+.Debug {
+    background-color:lightgreen;
+}
+.Information {
+    background-color:skyblue;
+}
+.Warning {
+    background-color: #ff6933;
+}
+.Error {
+    background-color: #e87d7d;
+}
+.Fatal {
+    background-color: red;
+    font-weight: bold;
+    color: whitesmoke;
+}

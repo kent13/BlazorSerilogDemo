@@ -1,24 +1,92 @@
 ﻿@page "/"
 
 @using Serilog
+<h5>Log Event Levels</h5>
+<p>
+    Serilog uses levels as the primary means for assigning importance to log events. The levels in increasing order of importance are:
+</p>
+<ul>
+    <li>
+        Verbose - tracing information and debugging minutiae; generally only switched on in unusual situations
+    </li>
+    <li>
+        Debug - internal control flow and diagnostic state dumps to facilitate pinpointing of recognised problems
+    </li>
+    <li>
+        Information - events of interest or that have relevance to outside observers; the default enabled minimum logging level
+    </li>
+    <li>
+        Warning - indicators of possible issues or service/functionality degradation
+    </li>
+    <li>
+        Error - indicating a failure within the application or connected system
+    </li>
+    <li>
+        Fatal - critical errors causing complete failure of the application
+    </li>
+</ul>
+<p> Click the buttons below to enter messages into the log then go to the Log Viewer page to tsee the results.</p>
+<div class="col-4">
+    <div class="row mt1">
+        <button class="btn Verbose btn-block" @onclick="VerboseMessage">Log Verbose Message with serilog</button>
+    </div>
 
-<div class="row mt1">
-    <button class="btn btn-primary" @onclick="LogMessage">log message with serilog</button>
+    <div class="row mt1">
+        <button class="btn Debug btn-block" @onclick="DebugMessage">Log Debug Message with serilog</button>
+    </div>
+
+    <div class="row mt1">
+        <button class="btn Information btn-block" @onclick="LogInformation">Log Information Message with serilog</button>
+    </div>
+
+    <div class="row mt1">
+        <button class="btn Warning btn-block" @onclick="LogWarning">Log Warning Message with serilog</button>
+    </div>
+
+    <div class="row mt1">
+        <button class="btn Error btn-block" @onclick="LogError">Log Error Message with serilog</button>
+    </div>
+
+    <div class="row mt1">
+        <button class="btn Fatal  btn-block" @onclick="FatalError">Log Fatal  Message with serilog</button>
+    </div>
 </div>
-
-<div class="row mt1">
-    <button class="btn btn-warning" @onclick="LogWarning">log warning with serilog</button>
-</div>
-
-<div class="row mt1">
-    <button class="btn btn-danger" @onclick="LogError">log error with serilog</button>
-</div>
-
-
 @code {
-    private void LogMessage()
+
+
+    protected override void OnInitialized()
     {
-        Log.Information("Information Message");
+        Log.Information($"Home Page loaded at {DateTime.Now}");
+}
+
+
+    /*
+        Log Event Levels
+    Serilog uses levels as the primary means for assigning importance to log events. The levels in increasing order of importance are:
+
+    Verbose - tracing information and debugging minutiae; generally only switched on in unusual situations
+    Debug - internal control flow and diagnostic state dumps to facilitate pinpointing of recognised problems
+    Information - events of interest or that have relevance to outside observers; the default enabled minimum logging level
+    Warning - indicators of possible issues or service/functionality degradation
+    Error - indicating a failure within the application or connected system
+    Fatal - critical errors causing complete failure of the application
+
+     */
+
+
+    private void VerboseMessage()
+    {
+        Log.Verbose("Verbose Message");
+    }
+
+    private void DebugMessage()
+    {
+        Log.Debug("Debug Message");
+    }
+
+    private void LogInformation()
+    {
+        Log.Information($"Information Message: The time is: {DateTime.Now}");
     }
 
     private void LogWarning()
@@ -29,5 +97,10 @@
     private void LogError()
     {
         Log.Error("Error Message", this);
+    }
+
+    private void FatalError()
+    {
+        Log.Fatal("Fatal Message", this);
     }
 }

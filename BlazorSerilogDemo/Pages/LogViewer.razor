@@ -3,11 +3,9 @@
 
 <h3>LogViewer</h3>
 
-
 <div class="container-fluid">
-    <h3>Breeds</h3>
     <div class="input-group col-md-6">
-        <input type="text" @bind="SearchLog" @bind:event="oninput" class="form-control" placeholder="Filter">
+        <input type="text" @bind="SearchLog" @bind:event="oninput" class="form-control" placeholder="Filter Levels">
         <div class="input-group-btn">
             <button @onclick="ClearFilter" class="btn-xs btn-info">Clear</button>
         </div>
@@ -18,21 +16,21 @@
         <table class="table table-striped table-hover">
             <thead class="thead-dark">
                 <tr>
-                    <th>Name</th>
-                    <th>Origin</th>
-                    <th>AKC Group</th>
-                    <th>AKC</th>
-                    <th>UKC</th>
+                    <th>Level</th>
+                    <th>When</th>
+                    <th>Message</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                @if (_breeds == null)
+                @if (_logItems == null)
                 {
                     <tr>
                         <td colspan="4">
                             <div class="spinner">
                                 <div class="rect1"></div>
                                 <div class="rect2"></div>
+                                <div class="rect3"></div>
                                 <div class="rect3"></div>
 
                             </div>
@@ -45,12 +43,12 @@
                     @foreach (var logItem in FilteredLogs)
                     {
                         <tr>
-                            <td>@logItem.Level</td>
-                            <td>@logItem.TimeStamp</td>
+                            <td class="@logItem.Level">@logItem.Level</td>
+                            <td>@logItem.TimeStamp.ToString("MM/dd/yyyy HH:mm:ss")</td>
                             <td>@logItem.Message</td>
-                            @*<td class="row">
-                                    <button @onclick="@(() => ShowEditBreed(breed))" class="btn-xs btn-primary">Edit</button>
-                                </td>*@
+                            <td class="row">
+                                    <button @onclick="@(() => ShowDetail(logItem))" class="btn-xs btn-primary">view details</button>
+                                </td>
                         </tr>
                     }
                 }
@@ -64,12 +62,12 @@
 
 
     string SearchLog = "";
-    private IEnumerable<LogItem> _breeds;
+    private IEnumerable<LogItem> _logItems;
 
     private string _message = "";
 
 
-    List<LogItem> FilteredLogs => _breeds
+    List<LogItem> FilteredLogs => _logItems
     .Where(i => i.Level.ToLower()
     .Contains(SearchLog.ToLower()))
     .ToList();
@@ -93,26 +91,15 @@
         }
     }
 
-    //async Task ShowEditBreed(Breed breed)
-    //{
-    //    var parameters = new ModalParameters();
-    //    parameters.Add(nameof(BreedForm.breed), breed);
+    async Task ShowDetail(LogItem logItems)
+    {
 
-    //    var breedsModal = Modal.Show<BreedForm>("Breed", parameters);
-    //    var result = await breedsModal.Result;
-
-    //    if (!result.Cancelled)
-    //    {
-    //        await UpdateList();
-    //        emptyBreed = new Breed();
-    //        this.StateHasChanged();
-    //    }
-    //}
+    }
 
 
     void UpdateList()
     {
-        _breeds = logService.GetLastLogitems(10);
+        _logItems = logService.GetLastLogitems(10);
         this.StateHasChanged();
     }
 
