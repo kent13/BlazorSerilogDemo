@@ -1,22 +1,41 @@
 ﻿@page "/logviewer"
 @inject LoggerService logService
+@using Serilog.Events;
+
+@inject NavigationManager NavigationManager
 
 <h3>LogViewer</h3>
 
 <div class="container-fluid">
-    <div class="input-group col-md-6">
-        <input type="text" @bind="SearchLog" @bind:event="oninput" class="form-control" placeholder="Filter Levels">
-        <div class="input-group-btn">
-            <button @onclick="ClearFilter" class="btn-xs btn-info">Clear</button>
+    <div class="row">
+        <div class="col-3">
+            <label>Set Log Level</label>
+            <select class=" @_minimumLogLevel" @bind="newMinimumLevel">
+                <option class="Verbose" value="Verbose">Verbose</option>
+                <option class="Debug" value="Debug">Debug</option>
+                <option class="Information" value="Information">Information</option>
+                <option class="Warning" value="Warning">Warning</option>
+                <option class="Error" value="Error">Error</option>
+                <option class="Fatal" value="Fatal ">Fatal</option>
+
+            </select>
+        </div>
+        <div class="col-4">
+            <label>Entries to keep:</label>
+            <input type="number" @bind="logEntriesToKeep" style="width:80px" />
+        </div>
+        <div class="col-4">
+            <label>Entries to show:</label>
+            <input type="number" @bind="logEntriesToShow" style="width:80px" />
         </div>
     </div>
-    <div>Minimum Log Level = @_minimumLogLevel</div>
     <br />
 
     <div class="table-responsive row">
-        <table class="table table-striped table-hover">
+        <table class="table table-striped table-hover table-sm">
             <thead class="thead-dark">
                 <tr>
+                    <th>Id</th>
                     <th>Level</th>
                     <th>When</th>
                     <th>Message</th>
@@ -37,19 +56,20 @@
                             </div>
                         </td>
                     </tr>
-
                 }
                 else
                 {
                     @foreach (var logItem in FilteredLogs)
                     {
                         <tr>
+                            <td>@logItem.Id</td>
                             <td class="@logItem.Level">@logItem.Level</td>
-                            <td>@logItem.TimeStamp.ToString("MM/dd/yyyy HH:mm:ss")</td>
+                            <td>@logItem.TimeStamp.ToString("MM/dd/yyyy HH:mm:ss.ss")</td>
                             <td>@logItem.Message</td>
                             <td class="row">
-                                    <button @onclick="@(() => ShowDetail(logItem))" class="btn-xs btn-primary">view details</button>
-                                </td>
+                                <button @onclick="@(() => ShowDetail(logItem.Id))" class="btn-xs btn-primary">view details</button>
+
+                            </td>
                         </tr>
                     }
                 }
@@ -67,6 +87,7 @@
 
     private string _message = "";
     private string _minimumLogLevel = "";
+    private int _logEntriesToShow = 25;
 
     List<LogItem> FilteredLogs => _logItems
     .Where(i => i.Level.ToLower()
@@ -92,17 +113,46 @@
         }
     }
 
-    async Task ShowDetail(LogItem logItems)
+    void ShowDetail(int id)
     {
-
+        NavigationManager.NavigateTo($"/logDetails/{id}");
     }
-
 
     void UpdateList()
     {
-        _logItems = logService.GetLastLogitems(10);
+        _logItems = logService.GetLastLogitems(_logEntriesToShow);
         _minimumLogLevel = logService.GetMinimumLogLevel();
         this.StateHasChanged();
+    }
+
+
+    public string newMinimumLevel
+    {
+        get { return logService.GetMinimumLogLevel(); }
+        set
+        {
+            logService.SetMinimumLogLevel(value);
+            UpdateList();
+        }
+    }
+    public int logEntriesToKeep
+    {
+        get { return logService.LogEntriesMax; }
+        set
+        {
+            logService.LogEntriesMax = value;
+            UpdateList();
+        }
+    }
+
+    public int logEntriesToShow
+    {
+        get { return _logEntriesToShow; }
+        set
+        {
+            _logEntriesToShow = value;
+            UpdateList();
+        }
     }
 
 }

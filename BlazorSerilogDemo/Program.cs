@@ -25,8 +25,8 @@ namespace BlazorSerilogDemo
             builder.Services.AddSingleton<LoggerService>();
 
             var host = builder.Build();
-            var loggerService = host.Services.GetService<LoggerService>();
-            loggerService.LevelSwitch.MinimumLevel = LogEventLevel.Warning;
+            
+            var loggerService = host.Services.GetService<LoggerService>();           
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.ControlledBy(loggerService.LevelSwitch)
                 .Enrich.WithProperty("InstanceId", Guid.NewGuid().ToString("n"))

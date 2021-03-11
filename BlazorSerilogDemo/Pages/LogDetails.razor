@@ -1,0 +1,52 @@
+﻿
+@page "/logDetails"
+@page "/logDetails/{logItemId}"
+
+@inject LoggerService logService
+
+
+<h3>LogDetails</h3>
+<div class="row">
+    <label>Level</label>
+    <div class="detail">
+        @logItem.Level
+    </div>
+</div>
+
+<div class="row">
+    @logItem.TimeStamp
+</div>
+<div class="row">
+    @logItem.Message
+</div>
+<div class="row">
+    @logItem.Exception
+</div>
+<div class="row">
+    @logItem.Properties
+</div>
+
+<NavLink class="nav-link" href="logviewer">
+    <span class="oi oi-plus"></span> Log Viewer
+</NavLink>
+
+@code {
+    [Parameter]
+    public string logItemId { get; set; }
+
+    private LogItem logItem = new LogItem();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrEmpty(logItemId)
+    )
+        {
+
+            int id = 0;
+            int.TryParse(logItemId, out id);
+
+            logItem = await logService.GetLogItem(id);
+        }
+    }
+
+}
