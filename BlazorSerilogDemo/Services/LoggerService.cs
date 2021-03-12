@@ -50,10 +50,23 @@ namespace BlazorSerilogDemo.Services
             return _log.TakeLastReverse(numberToGet);
         }
 
-        public async Task<LogItem> GetLogItem(int id)
+        public async Task<LogItem> GetLogItemAsync(int id)
         {
             // Following statement will prevent a compiler warning
             await Task.FromResult(0);
+            try
+            {
+                var logItem = _log.FirstOrDefault(x => x.Id == id);
+                return logItem;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
+        }
+        public LogItem GetLogItem(int id)
+        {
+            // Following statement will prevent a compiler warning
             try
             {
                 var logItem = _log.FirstOrDefault(x => x.Id == id);

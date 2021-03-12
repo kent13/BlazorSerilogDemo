@@ -3,7 +3,9 @@
 @page "/logDetails/{logItemId}"
 
 @inject LoggerService logService
+@inject NavigationManager NavigationManager
 
+@using Serilog
 
 <h3>LogDetails</h3>
 <div class="row">
@@ -14,16 +16,33 @@
 </div>
 
 <div class="row">
-    @logItem.TimeStamp
+    <label>TimeStamp</label>
+    <div class="detail">
+
+        @logItem.TimeStamp
+    </div>
 </div>
 <div class="row">
-    @logItem.Message
+    <label>Message</label>
+    <div class="detail">
+
+        @logItem.Message
+    </div>
 </div>
 <div class="row">
-    @logItem.Exception
+    <label>Exception</label>
+    <div class="detail">
+
+        @logItem.Exception
+    </div>
 </div>
+
 <div class="row">
-    @logItem.Properties
+    <label>Properties</label>
+    <div class="detail">
+
+        @logItem.Properties
+    </div>
 </div>
 
 <NavLink class="nav-link" href="logviewer">
@@ -36,17 +55,31 @@
 
     private LogItem logItem = new LogItem();
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!string.IsNullOrEmpty(logItemId)
-    )
+        if (firstRender)
         {
+            if (!string.IsNullOrEmpty(logItemId))
+            {
 
-            int id = 0;
-            int.TryParse(logItemId, out id);
+                int id = 0;
+                int.TryParse(logItemId, out id);
+                try
+                {
+                    logItem = await logService.GetLogItemAsync(id);
+                    if (string.IsNullOrWhiteSpace(logItem.Level))
+                    {
+                        NavigationManager.NavigateTo("/logViewer");
+                    }
+                    StateHasChanged();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("LogDetail error", ex);
 
-            logItem = await logService.GetLogItem(id);
+                    NavigationManager.NavigateTo("/logViewer");
+                }
+            }
         }
     }
-
 }
