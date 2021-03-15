@@ -1,0 +1,54 @@
+﻿@implements IDisposable
+
+<div style="height:42px;">
+    <span style="font-size:x-large">@GetAppStateSize()&nbsp;&nbsp;@State.AppState.Message&nbsp;</span>
+    @if (State.AppState.Enabled)
+    {
+        <button class="btn btn-success">Enabled</button>
+    }
+    else
+    {
+        <button class="btn btn-danger">Disabled</button>
+    }
+    &nbsp;
+    <button class="btn btn-primary" @onclick="UpdateMessageButtonClicked">Update Message</button>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    public CascadingAppStateProvider State { get; set; }
+
+    string GetAppStateSize()
+    {
+        string json = JsonConvert.SerializeObject(State.AppState);
+        return "AppState Size: " + json.Length.ToString();
+    }
+
+    void UpdateMessageButtonClicked()
+    {
+        string msg = "Message Updated At " + DateTime.Now.ToLongTimeString();
+        State.AppState.UpdateMessage(this, msg);
+    }
+
+    private async Task AppState_StateChanged(ComponentBase Source, string Property)
+    {
+        if (Source != this)
+        {
+            // Inspect Property to determine if action needs to be taken.
+            await InvokeAsync(StateHasChanged);
+        }
+        await State.SaveChangesAsync(); // Persist all changes, even from this
+    }
+
+    protected override void OnInitialized()
+    {
+        State.AppState.StateChanged += async (Source, Property) => await AppState_StateChanged(Source, Property);
+    }
+
+    void IDisposable.Dispose()
+    {
+        State.AppState.StateChanged -= async (Source, Property) => await AppState_StateChanged(Source, Property);
+    }
+
+}

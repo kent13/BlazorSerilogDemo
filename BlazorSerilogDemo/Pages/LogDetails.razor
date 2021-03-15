@@ -32,15 +32,14 @@
 <div class="row">
     <label>Exception</label>
     <div class="detail">
+       @logItem.Exception
 
-        @logItem.Exception
     </div>
 </div>
 
 <div class="row">
     <label>Properties</label>
     <div class="detail">
-
         @logItem.Properties
     </div>
 </div>
@@ -71,6 +70,7 @@
                     {
                         NavigationManager.NavigateTo("/logViewer");
                     }
+                    logItem.Exception = doReturns(logItem.Exception);
                     StateHasChanged();
                 }
                 catch (Exception ex)
@@ -81,5 +81,12 @@
                 }
             }
         }
+    }
+
+    private string doReturns(string inText)
+    {
+        var result = inText.Replace("\n", "<br />");
+
+        return result;
     }
 }

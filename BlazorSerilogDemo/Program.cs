@@ -28,7 +28,7 @@ namespace BlazorSerilogDemo
             
             var loggerService = host.Services.GetService<LoggerService>();           
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.ControlledBy(loggerService.LevelSwitch)
+                .MinimumLevel.ControlledBy(loggerService.GetLevelSwitch())
                 .Enrich.WithProperty("InstanceId", Guid.NewGuid().ToString("n"))
                 .WriteTo.LoggerSink(host.Services.GetRequiredService<LoggerService>()) // the Blazor custome cachs log
                 .WriteTo.BrowserConsole() // browser console

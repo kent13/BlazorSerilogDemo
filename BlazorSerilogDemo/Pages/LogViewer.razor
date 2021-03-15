@@ -99,8 +99,9 @@
         SearchLog = string.Empty;
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
+        base.OnInitialized();
         try
         {
             UpdateList();
@@ -108,7 +109,7 @@
         }
         catch (HttpRequestException ex)
         {
-            _message = ($"There was a problem loading trail data: {ex.Message}");
+            _message = ($"There was a problem loading data: {ex.Message}");
             StateHasChanged();
         }
     }

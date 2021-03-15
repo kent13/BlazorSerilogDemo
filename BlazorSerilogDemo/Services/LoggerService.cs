@@ -6,48 +6,46 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 
 namespace BlazorSerilogDemo.Services
 {
     public class LoggerService
     {
-        private List<LogItem> _log = new List<LogItem>();
-        public LoggingLevelSwitch LevelSwitch = new LoggingLevelSwitch();
-        private int _logEntriesMax = 500;
-
+        public LogData logData = new LogData();
 
         public LoggerService()
         {
-            LevelSwitch.MinimumLevel = LogEventLevel.Warning;
+            logData.LevelSwitch.MinimumLevel = LogEventLevel.Warning;
         }
 
         public void Add(LogItem logItem)
         {
-            _log.Add(logItem);
+            logData.Log.Add(logItem);
             TrimRecords();
         }
         public int LogEntriesMax
         {
-            get { return _logEntriesMax; }
+            get { return  logData.LogEntriesMax; }
             set
             {
-                _logEntriesMax = value;
+                logData.LogEntriesMax = value;
                 TrimRecords();
             }
         }
         private void TrimRecords()
         {
             // Remove Beginning of list
-            int remove = Math.Max(0, _log.Count - _logEntriesMax);
+            int remove = Math.Max(0, logData.Log.Count - logData.LogEntriesMax);
             if (remove > 0)
             {
-                _log.RemoveRange(0, remove);
+                logData.Log.RemoveRange(0, remove);
             }
         }
 
         public IEnumerable<LogItem> GetLastLogitems(int numberToGet = 5)
         {
-            return _log.TakeLastReverse(numberToGet);
+            return logData.Log.TakeLastReverse(numberToGet);
         }
 
         public async Task<LogItem> GetLogItemAsync(int id)
@@ -56,7 +54,7 @@ namespace BlazorSerilogDemo.Services
             await Task.FromResult(0);
             try
             {
-                var logItem = _log.FirstOrDefault(x => x.Id == id);
+                var logItem = logData.Log.FirstOrDefault(x => x.Id == id);
                 return logItem;
             }
             catch (Exception ex)
@@ -69,7 +67,7 @@ namespace BlazorSerilogDemo.Services
             // Following statement will prevent a compiler warning
             try
             {
-                var logItem = _log.FirstOrDefault(x => x.Id == id);
+                var logItem = logData.Log.FirstOrDefault(x => x.Id == id);
                 return logItem;
             }
             catch (Exception ex)
@@ -92,7 +90,11 @@ namespace BlazorSerilogDemo.Services
         }
         public void SetMinimumLogLevel(LogEventLevel newLevel)
         {
-            LevelSwitch.MinimumLevel = newLevel;
+            logData.LevelSwitch.MinimumLevel = newLevel;
+        }
+        public LoggingLevelSwitch GetLevelSwitch()
+        {
+            return logData.LevelSwitch;
         }
 
         public void SetMinimumLogLevel(string newLevel)
@@ -100,25 +102,25 @@ namespace BlazorSerilogDemo.Services
             switch (newLevel.ToLowerInvariant())
             {
                 case "verbose":
-                    LevelSwitch.MinimumLevel = LogEventLevel.Verbose;
+                    logData.LevelSwitch.MinimumLevel = LogEventLevel.Verbose;
                     break;
                 case "vebug":
-                    LevelSwitch.MinimumLevel = LogEventLevel.Debug;
+                    logData.LevelSwitch.MinimumLevel = LogEventLevel.Debug;
                     break;
                 case "warning":
-                    LevelSwitch.MinimumLevel = LogEventLevel.Warning;
+                   logData.LevelSwitch.MinimumLevel = LogEventLevel.Warning;
                     break;
                 case "information":
-                    LevelSwitch.MinimumLevel = LogEventLevel.Information;
+                   logData.LevelSwitch.MinimumLevel = LogEventLevel.Information;
                     break;
                 case "error":
-                    LevelSwitch.MinimumLevel = LogEventLevel.Error;
+                   logData.LevelSwitch.MinimumLevel = LogEventLevel.Error;
                     break;
                 case "fatal":
-                    LevelSwitch.MinimumLevel = LogEventLevel.Fatal;
+                    logData.LevelSwitch.MinimumLevel = LogEventLevel.Fatal;
                     break;
                 default:
-                    LevelSwitch.MinimumLevel = LogEventLevel.Warning;
+                    logData.LevelSwitch.MinimumLevel = LogEventLevel.Warning;
                     break;
             }         
         }
