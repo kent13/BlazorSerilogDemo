@@ -50,6 +50,10 @@
     <div class="row mt1">
         <button class="btn Fatal  btn-block" @onclick="FatalError">Log Fatal  Message with serilog</button>
     </div>
+
+    <div class="row mt1">
+        <button class="btn Fatal btn-block" @onclick="FatalException">Log Fatal Exception Message with serilog</button>
+    </div>
 </div>
 @code {
 
@@ -57,7 +61,7 @@
     protected override void OnInitialized()
     {
         Log.Information($"Home Page loaded at {DateTime.Now}");
-}
+    }
 
 
     /*
@@ -102,5 +106,22 @@
     private void FatalError()
     {
         Log.Fatal("Fatal Message", this);
+    }
+
+    private void FatalException()
+    {
+        int x = 0;
+        int y = 3;
+        try
+        {
+            var z = y / x;
+        }
+        catch (Exception ex)
+        {
+
+            Log.Fatal(ex, "test exception");
+            
+        }
+        Log.Information("no Error", this);
     }
 }

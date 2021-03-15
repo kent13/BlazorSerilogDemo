@@ -7,7 +7,7 @@ namespace BlazorSerilogDemo.Services
 {
     public class LogItem
     {
-        //public int Id { get; set; }
+        public int Id { get; set; }
         public DateTimeOffset TimeStamp { get; set; }
         public string Message { get; set; }
         //public string MessageTemplate { get; set; }
