@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Schema;
 
 namespace BlazorSerilogDemo.Services
 {
@@ -16,7 +15,7 @@ namespace BlazorSerilogDemo.Services
 
         public LoggerService()
         {
-            logData.LevelSwitch.MinimumLevel = LogEventLevel.Warning;
+            logData.LevelSwitch.MinimumLevel = LogEventLevel.Information;
         }
 
         public void Add(LogItem logItem)
@@ -26,7 +25,7 @@ namespace BlazorSerilogDemo.Services
         }
         public int LogEntriesMax
         {
-            get { return  logData.LogEntriesMax; }
+            get { return logData.LogEntriesMax; }
             set
             {
                 logData.LogEntriesMax = value;
@@ -81,8 +80,8 @@ namespace BlazorSerilogDemo.Services
             string result = "I don't Know";
             if (Log.IsEnabled(LogEventLevel.Verbose)) { result = "Verbose"; }
             else if (Log.IsEnabled(LogEventLevel.Debug)) { result = "Debug"; }
-            else if (Log.IsEnabled(LogEventLevel.Warning)) { result = "Warning"; }
             else if (Log.IsEnabled(LogEventLevel.Information)) { result = "Information"; }
+            else if (Log.IsEnabled(LogEventLevel.Warning)) { result = "Warning"; }
             else if (Log.IsEnabled(LogEventLevel.Error)) { result = "Error"; }
             else if (Log.IsEnabled(LogEventLevel.Fatal)) { result = "Fatal"; }
 
@@ -104,25 +103,26 @@ namespace BlazorSerilogDemo.Services
                 case "verbose":
                     logData.LevelSwitch.MinimumLevel = LogEventLevel.Verbose;
                     break;
-                case "vebug":
+                case "debug":
                     logData.LevelSwitch.MinimumLevel = LogEventLevel.Debug;
                     break;
                 case "warning":
-                   logData.LevelSwitch.MinimumLevel = LogEventLevel.Warning;
+                    logData.LevelSwitch.MinimumLevel = LogEventLevel.Warning;
                     break;
                 case "information":
-                   logData.LevelSwitch.MinimumLevel = LogEventLevel.Information;
+                    logData.LevelSwitch.MinimumLevel = LogEventLevel.Information;
                     break;
                 case "error":
-                   logData.LevelSwitch.MinimumLevel = LogEventLevel.Error;
+                    logData.LevelSwitch.MinimumLevel = LogEventLevel.Error;
                     break;
                 case "fatal":
                     logData.LevelSwitch.MinimumLevel = LogEventLevel.Fatal;
                     break;
                 default:
-                    logData.LevelSwitch.MinimumLevel = LogEventLevel.Warning;
+                    logData.LevelSwitch.MinimumLevel = LogEventLevel.Information;
+                    Log.Warning("Log level defaulted to Info - Spelling error?");
                     break;
-            }         
+            }
         }
     }
 }

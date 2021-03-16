@@ -1,6 +1,5 @@
 ﻿@page "/"
 
-@using Serilog
 <h5>Log Event Levels</h5>
 <p>
     Serilog uses levels as the primary means for assigning importance to log events. The levels in increasing order of importance are:
@@ -120,7 +119,7 @@
         {
 
             Log.Fatal(ex, "test exception");
-            
+
         }
         Log.Information("no Error", this);
     }

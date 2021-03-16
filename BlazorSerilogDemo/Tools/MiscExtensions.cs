@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorSerilogDemo.Tools
 {
@@ -92,6 +91,12 @@ namespace BlazorSerilogDemo.Tools
             return msg.ToString();
         }
         #endregion Exception.ToLogString
+
+        public static string EncodeStringAsHTML(this string inText)
+        {
+            var result = inText.Replace("\n", "<br />");
+            return result;
+        }
     }
 }
 
