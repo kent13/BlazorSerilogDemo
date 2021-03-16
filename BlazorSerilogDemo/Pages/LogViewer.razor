@@ -133,7 +133,7 @@
         set
         {
             logService.SetMinimumLogLevel(value);
-            UpdateList();
+            _minimumLogLevel = logService.GetMinimumLogLevel();
         }
     }
     public int logEntriesToKeep

@@ -15,7 +15,7 @@ namespace BlazorSerilogDemo.Services
 
         public LogData()
         {
-            LevelSwitch.MinimumLevel = LogEventLevel.Warning;
+            LevelSwitch.MinimumLevel = LogEventLevel.Information;
         }
     }
 }
