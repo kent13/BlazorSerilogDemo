@@ -54,6 +54,10 @@ namespace BlazorSerilogDemo.Services
             try
             {
                 var logItem = logData.Log.FirstOrDefault(x => x.Id == id);
+                if (logItem == null)
+                {
+                    logItem = new LogItem();
+                }
                 return logItem;
             }
             catch (Exception ex)

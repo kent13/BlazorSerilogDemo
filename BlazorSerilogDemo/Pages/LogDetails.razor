@@ -1,5 +1,5 @@
 ﻿@page "/logDetails"
-@page "/logDetails/{logItemId}"
+@page "/logDetails/{logItemId:int}"
 
 @inject LoggerService logService
 @inject NavigationManager NavigationManager
@@ -51,36 +51,31 @@
 
 @code {
     [Parameter]
-    public string logItemId { get; set; }
+    public int LogItemId { get; set; }
 
     private LogItem logItem = new LogItem();
     private MarkupString exceptionDetails;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+
+    protected override async Task OnParametersSetAsync()
     {
-        if (firstRender)
+        if (LogItemId >= 0)
         {
-            if (!string.IsNullOrEmpty(logItemId))
+            try
             {
-
-                int id = 0;
-                int.TryParse(logItemId, out id);
-                try
+                logItem = await logService.GetLogItemAsync(LogItemId);
+                if (logItem == null)
                 {
-                    logItem = await logService.GetLogItemAsync(id);
-                    if (string.IsNullOrWhiteSpace(logItem.Level))
-                    {
-                        NavigationManager.NavigateTo("/logViewer");
-                    }
-                    exceptionDetails = new MarkupString(logItem.Exception.EncodeStringAsHTML());
-                    StateHasChanged();
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, $"{this.GetType().FullName} in OnAfterRenderAsync");
-
                     NavigationManager.NavigateTo("/logViewer");
                 }
+                exceptionDetails = new MarkupString(logItem.Exception.EncodeStringAsHTML());
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"{this.GetType().FullName} in OnParametersSetAsync");
+
+                NavigationManager.NavigateTo("/logViewer");
             }
         }
     }

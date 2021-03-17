@@ -94,6 +94,10 @@ namespace BlazorSerilogDemo.Tools
 
         public static string EncodeStringAsHTML(this string inText)
         {
+            if (string.IsNullOrWhiteSpace(inText))
+            {
+                return string.Empty;
+            }
             var result = inText.Replace("\n", "<br />");
             return result;
         }
